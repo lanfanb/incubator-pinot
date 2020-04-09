@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -67,10 +68,19 @@ public class JsonUtils {
   public static final String WILDCARD = "*";
 
   // NOTE: Do not expose the ObjectMapper to prevent configuration change
-  private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
-  public static final ObjectReader DEFAULT_READER = DEFAULT_MAPPER.reader();
-  public static final ObjectWriter DEFAULT_WRITER = DEFAULT_MAPPER.writer();
-  public static final ObjectWriter DEFAULT_PRETTY_WRITER = DEFAULT_MAPPER.writerWithDefaultPrettyPrinter();
+  private static final ObjectMapper DEFAULT_MAPPER;
+  public static final ObjectReader DEFAULT_READER;
+  public static final ObjectWriter DEFAULT_WRITER;
+  public static final ObjectWriter DEFAULT_PRETTY_WRITER;
+
+  static {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
+    DEFAULT_MAPPER = mapper;
+    DEFAULT_READER = DEFAULT_MAPPER.reader();
+    DEFAULT_WRITER = DEFAULT_MAPPER.writer();
+    DEFAULT_PRETTY_WRITER = DEFAULT_MAPPER.writerWithDefaultPrettyPrinter();
+  }
 
   public static <T> T stringToObject(String jsonString, Class<T> valueType)
       throws IOException {
