@@ -489,4 +489,11 @@ public class Pql2CompilerTest {
     Assert.assertEquals(filterQuery.getValue().get(0), "\"Foo bar\"");
     Assert.assertEquals(filterQuery.getOperator(), FilterOperator.TEXT_MATCH);
   }
+
+  @Test
+  public void testScientificLiteral() {
+    String query = "SELECT l, COUNT(*) FROM t WHERE l = 18e-9 GROUP BY l";
+    BrokerRequest request = COMPILER.compileToBrokerRequest(query);
+    FilterQuery filterQuery = request.getFilterQuery();
+  }
 }
